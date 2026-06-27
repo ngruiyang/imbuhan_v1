@@ -1,343 +1,749 @@
-
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Imbuhan — Bahasa Melayu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.app { max-width: 680px; padding: 1.5rem 0; }
-.hero { margin-bottom: 2rem; }
-.hero h1 { font-size: 28px; font-weight: 500; color: var(--text-primary); letter-spacing: -0.5px; }
-.hero p { font-size: 15px; color: var(--text-secondary); margin-top: 6px; line-height: 1.6; }
-.accent-word { color: var(--text-accent); font-weight: 500; }
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface-alt: #F0EDE8;
+    --border: #E2DDD8;
+    --border-strong: #C8C3BC;
+    --text: #1C1917;
+    --text-secondary: #6B6560;
+    --text-muted: #A09B96;
+    --accent: #1A6B55;
+    --accent-light: #E8F4F0;
+    --accent-mid: #2D9B78;
+    --accent-border: #9BCFC0;
+    --warn-bg: #FFF8EC;
+    --warn-border: #F0C060;
+    --warn-text: #7A5A10;
+    --success-bg: #EDFAF4;
+    --success-border: #6DCFA8;
+    --success-text: #145C3A;
+    --danger-bg: #FEF0EF;
+    --danger-border: #F0A09C;
+    --danger-text: #8C2820;
+    --radius: 8px;
+    --radius-lg: 14px;
+  }
 
-.tab-row { display: flex; gap: 4px; margin-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); padding-bottom: 0; }
-.tab { padding: 8px 16px; font-size: 14px; color: var(--text-secondary); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s; }
-.tab.active { color: var(--text-accent); border-bottom-color: var(--border-accent); }
-.tab:hover:not(.active) { color: var(--text-primary); }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
 
-.section { display: none; }
-.section.active { display: block; }
+  /* ── Layout ── */
+  .site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .wordmark {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: -0.3px;
+  }
+  .wordmark span { color: var(--text-muted); font-style: italic; font-size: 14px; font-family: 'Inter', sans-serif; margin-left: 8px; }
 
-.imbuhan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
-.imbuhan-card { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; cursor: pointer; transition: border-color 0.15s; }
-.imbuhan-card:hover { border-color: var(--border-accent); }
-.imbuhan-card.selected { border-color: var(--border-accent); background: var(--bg-accent); }
-.imbuhan-card .type-badge { font-size: 11px; font-weight: 500; color: var(--text-accent); background: var(--bg-accent); border-radius: var(--radius); padding: 2px 8px; display: inline-block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
-.imbuhan-card h3 { font-size: 22px; font-weight: 500; color: var(--text-primary); font-family: var(--font-voice); }
-.imbuhan-card p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+  .nav-tabs { display: flex; gap: 2px; }
+  .nav-tab {
+    padding: 6px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+  }
+  .nav-tab:hover { background: var(--surface-alt); color: var(--text); }
+  .nav-tab.active { background: var(--accent-light); color: var(--accent); }
 
-.detail-panel { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
-.detail-panel h2 { font-size: 18px; font-weight: 500; color: var(--text-primary); margin-bottom: 1rem; }
-.examples-list { display: flex; flex-direction: column; gap: 10px; }
-.example-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 10px 12px; background: var(--surface-2); border-radius: var(--radius); border: 0.5px solid var(--border); font-size: 14px; }
-.example-row .root { color: var(--text-secondary); }
-.example-row .arrow { color: var(--text-muted); text-align: center; font-size: 12px; }
-.example-row .result { font-weight: 500; color: var(--text-primary); }
-.example-row .meaning { color: var(--text-secondary); font-size: 12px; grid-column: 1 / -1; padding-top: 4px; border-top: 0.5px solid var(--border); margin-top: 4px; }
-.rule-box { margin-top: 1rem; background: var(--bg-warning); border: 0.5px solid var(--border-warning); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: var(--text-primary); line-height: 1.6; }
-.rule-box strong { color: var(--text-warning); }
+  .main { max-width: 880px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
 
-.quiz-card { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.5rem; }
-.quiz-q { font-size: 16px; color: var(--text-primary); margin-bottom: 6px; }
-.quiz-hint { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.25rem; }
-.quiz-form { display: flex; gap: 8px; margin-bottom: 1rem; }
-.quiz-form input { flex: 1; font-size: 15px; }
-.quiz-form button { padding: 0 20px; font-size: 14px; }
-.quiz-result { padding: 10px 14px; border-radius: var(--radius); font-size: 14px; line-height: 1.5; display: none; }
-.quiz-result.correct { background: var(--bg-success); color: var(--text-success); border: 0.5px solid var(--border-success); display: block; }
-.quiz-result.wrong { background: var(--bg-danger); color: var(--text-danger); border: 0.5px solid var(--border-danger); display: block; }
-.quiz-score { display: flex; gap: 16px; margin-bottom: 1.5rem; }
-.score-chip { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 6px 14px; font-size: 13px; color: var(--text-secondary); }
-.score-chip span { font-weight: 500; color: var(--text-primary); }
-.next-btn { margin-top: 1rem; font-size: 14px; }
+  .page { display: none; }
+  .page.active { display: block; }
 
-.reference-section { margin-bottom: 2rem; }
-.reference-section h2 { font-size: 16px; font-weight: 500; color: var(--text-primary); margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
-.ref-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.ref-table th { text-align: left; font-weight: 500; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 10px; border-bottom: 0.5px solid var(--border); }
-.ref-table td { padding: 9px 10px; border-bottom: 0.5px solid var(--border); color: var(--text-primary); vertical-align: top; line-height: 1.5; }
-.ref-table tr:last-child td { border-bottom: none; }
-.ref-table .prefix { font-family: var(--font-voice); font-size: 16px; font-weight: 500; color: var(--text-accent); }
-.ref-table .ex { color: var(--text-secondary); font-size: 13px; }
+  /* ── Hero ── */
+  .hero {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 6vw, 56px);
+    line-height: 1.1;
+    color: var(--text);
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+  }
+  .hero h1 em { color: var(--accent); font-style: italic; }
+  .hero p { font-size: 16px; color: var(--text-secondary); max-width: 560px; line-height: 1.7; }
+
+  /* ── Learn tab ── */
+  .learn-layout { display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 680px) { .learn-layout { grid-template-columns: 1fr; } }
+
+  .imbuhan-list { display: flex; flex-direction: column; gap: 6px; }
+  .imbuhan-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .imbuhan-btn:hover { border-color: var(--accent-border); background: var(--accent-light); }
+  .imbuhan-btn.active { border-color: var(--accent); background: var(--accent-light); }
+  .imbuhan-btn .affix {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--accent);
+    min-width: 70px;
+  }
+  .imbuhan-btn .meta { flex: 1; }
+  .imbuhan-btn .meta .type { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .imbuhan-btn .meta .desc { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
+
+  .detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .detail-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .detail-header .affix-large {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .detail-header h2 { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .detail-header p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+  .examples-block { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .examples-block h3 { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .example-row {
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .example-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .example-root { font-size: 15px; color: var(--text-secondary); }
+  .example-arrow { text-align: center; color: var(--text-muted); font-size: 12px; }
+  .example-result { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); }
+  .example-meaning { font-size: 12px; color: var(--text-muted); grid-column: 1 / -1; padding-top: 2px; }
+
+  .rule-block {
+    padding: 1rem 1.5rem;
+    background: var(--warn-bg);
+    border-top: 1px solid var(--warn-border);
+    font-size: 13px;
+    color: var(--warn-text);
+    line-height: 1.6;
+  }
+  .rule-block strong { font-weight: 500; }
+
+  .detail-empty {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .detail-empty .big { font-family: 'DM Serif Display', serif; font-size: 48px; color: var(--border); margin-bottom: 12px; }
+
+  /* ── Quiz tab ── */
+  .quiz-wrap { max-width: 600px; }
+  .score-row { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+  .score-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .score-pill b { color: var(--text); font-weight: 500; }
+
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+  }
+  .quiz-progress { font-size: 12px; color: var(--text-muted); margin-bottom: 1rem; }
+  .quiz-q { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+  .quiz-hint { font-size: 14px; color: var(--text-muted); margin-bottom: 1.25rem; }
+  .quiz-input-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .quiz-input-row input {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.12s;
+  }
+  .quiz-input-row input:focus { border-color: var(--accent); }
+  .quiz-input-row button {
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .quiz-input-row button:hover { background: #145C45; }
+  .quiz-feedback {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+    margin-bottom: 1rem;
+  }
+  .quiz-feedback.correct { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-text); display: block; }
+  .quiz-feedback.wrong { background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); display: block; }
+  .next-btn {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius);
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .next-btn:hover { background: var(--accent-light); }
+
+  /* ── Reference tab ── */
+  .ref-section { margin-bottom: 2.5rem; }
+  .ref-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 1rem;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-size: 14px;
+  }
+  .ref-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 16px;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--border);
+  }
+  .ref-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); line-height: 1.6; }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table .affix-cell { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); white-space: nowrap; }
+  .ref-table .ex-cell { color: var(--text-secondary); font-size: 13px; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+
+  /* ── Spelling rules visual ── */
+  .rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 1rem; }
+  .rule-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+  }
+  .rule-tile .trigger { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+  .rule-tile .form { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--accent); margin-bottom: 4px; }
+  .rule-tile .example { font-size: 12px; color: var(--text-secondary); }
+
+  @media (max-width: 520px) {
+    .main { padding: 1.5rem 1rem 3rem; }
+    .site-header { padding: 0 1rem; }
+    .nav-tab { padding: 6px 12px; font-size: 13px; }
+  }
 </style>
+</head>
+<body>
 
-<div class="app">
-  <h2 class="sr-only">Imbuhan Malay language learning tool with lessons, quiz, and reference</h2>
-  <div class="hero">
-    <h1>Imbuhan <span class="accent-word">Bahasa Melayu</span></h1>
-    <p>Affixes that transform root words — the building blocks of Malay grammar. Learn prefixes, suffixes, and their spelling rules.</p>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="wordmark">Imbuhan <span>Bahasa Melayu</span></div>
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" role="tab" onclick="showPage('learn')">Learn</button>
+      <button class="nav-tab" role="tab" onclick="showPage('quiz')">Quiz</button>
+      <button class="nav-tab" role="tab" onclick="showPage('reference')">Reference</button>
+    </nav>
   </div>
+</header>
 
-  <div class="tab-row">
-    <button class="tab active" onclick="switchTab('learn')">Learn</button>
-    <button class="tab" onclick="switchTab('quiz')">Quiz</button>
-    <button class="tab" onclick="switchTab('reference')">Reference</button>
-  </div>
+<main class="main">
 
-  <div id="tab-learn" class="section active">
-    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem;">Select an imbuhan to see rules and examples.</p>
-    <div class="imbuhan-grid">
-      <div class="imbuhan-card" onclick="selectImbuhan('meN')">
-        <span class="type-badge">Awalan</span>
-        <h3>meN-</h3>
-        <p>Active verb prefix — doing an action</p>
-      </div>
-      <div class="imbuhan-card" onclick="selectImbuhan('ber')">
-        <span class="type-badge">Awalan</span>
-        <h3>ber-</h3>
-        <p>State, possession, or reciprocal action</p>
-      </div>
-      <div class="imbuhan-card" onclick="selectImbuhan('ter')">
-        <span class="type-badge">Awalan</span>
-        <h3>ter-</h3>
-        <p>Accidental, superlative, or passive</p>
-      </div>
-      <div class="imbuhan-card" onclick="selectImbuhan('di')">
-        <span class="type-badge">Awalan</span>
-        <h3>di-</h3>
-        <p>Passive voice prefix — action done to subject</p>
-      </div>
-      <div class="imbuhan-card" onclick="selectImbuhan('an')">
-        <span class="type-badge">Akhiran</span>
-        <h3>-an</h3>
-        <p>Nominalises a verb or adjective</p>
-      </div>
-      <div class="imbuhan-card" onclick="selectImbuhan('kan')">
-        <span class="type-badge">Akhiran</span>
-        <h3>-kan</h3>
-        <p>Causative — cause something to happen</p>
-      </div>
-      <div class="imbuhan-card" onclick="selectImbuhan('i')">
-        <span class="type-badge">Akhiran</span>
-        <h3>-i</h3>
-        <p>Repeated action directed at an object</p>
-      </div>
-      <div class="imbuhan-card" onclick="selectImbuhan('ke_an')">
-        <span class="type-badge">Apitan</span>
-        <h3>ke-an</h3>
-        <p>Abstract noun or state; accidental passive</p>
-      </div>
+  <!-- ── Learn ── -->
+  <div id="page-learn" class="page active">
+    <div class="hero">
+      <p class="hero-eyebrow">Bahasa Melayu</p>
+      <h1>Belajar <em>Imbuhan</em></h1>
+      <p>Affixes that transform root words — the foundation of Malay morphology. Select any affix to explore its rules and see it in action.</p>
     </div>
-    <div id="detail" class="detail-panel" style="display:none"></div>
-  </div>
-
-  <div id="tab-quiz" class="section">
-    <div class="quiz-score">
-      <div class="score-chip">Correct: <span id="score-right">0</span></div>
-      <div class="score-chip">Attempted: <span id="score-total">0</span></div>
-    </div>
-    <div class="quiz-card">
-      <p class="quiz-q" id="q-text"></p>
-      <p class="quiz-hint" id="q-hint"></p>
-      <div class="quiz-form">
-        <input type="text" id="q-input" placeholder="Type your answer..." onkeydown="if(event.key==='Enter')checkAnswer()" />
-        <button onclick="checkAnswer()">Check</button>
+    <div class="learn-layout">
+      <div class="imbuhan-list" role="list">
+        <button class="imbuhan-btn" onclick="selectImbuhan('meN')" role="listitem">
+          <span class="affix">meN-</span>
+          <span class="meta"><span class="type">Awalan</span><span class="desc">Active verb prefix</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('ber')" role="listitem">
+          <span class="affix">ber-</span>
+          <span class="meta"><span class="type">Awalan</span><span class="desc">State or possession</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('ter')" role="listitem">
+          <span class="affix">ter-</span>
+          <span class="meta"><span class="type">Awalan</span><span class="desc">Accidental or superlative</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('di')" role="listitem">
+          <span class="affix">di-</span>
+          <span class="meta"><span class="type">Awalan</span><span class="desc">Passive voice</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('pe')" role="listitem">
+          <span class="affix">pe-</span>
+          <span class="meta"><span class="type">Awalan</span><span class="desc">Agent noun (doer)</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('an')" role="listitem">
+          <span class="affix">-an</span>
+          <span class="meta"><span class="type">Akhiran</span><span class="desc">Nominaliser</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('kan')" role="listitem">
+          <span class="affix">-kan</span>
+          <span class="meta"><span class="type">Akhiran</span><span class="desc">Causative / benefactive</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('i')" role="listitem">
+          <span class="affix">-i</span>
+          <span class="meta"><span class="type">Akhiran</span><span class="desc">Directed or repeated action</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('ke_an')" role="listitem">
+          <span class="affix">ke-…-an</span>
+          <span class="meta"><span class="type">Apitan</span><span class="desc">Abstract noun / state</span></span>
+        </button>
+        <button class="imbuhan-btn" onclick="selectImbuhan('pe_an')" role="listitem">
+          <span class="affix">pe-…-an</span>
+          <span class="meta"><span class="type">Apitan</span><span class="desc">Place or process noun</span></span>
+        </button>
       </div>
-      <div class="quiz-result" id="q-result"></div>
-      <button class="next-btn" onclick="nextQuestion()">Next question →</button>
+
+      <div id="detail-panel" class="detail-card">
+        <div class="detail-empty">
+          <div class="big">اِمبوهن</div>
+          <p>Select an imbuhan on the left to explore its rules and examples.</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div id="tab-reference" class="section">
-    <div class="reference-section">
+  <!-- ── Quiz ── -->
+  <div id="page-quiz" class="page">
+    <div class="hero">
+      <p class="hero-eyebrow">Latihan</p>
+      <h1>Test your <em>knowledge</em></h1>
+      <p>Apply the rules — type the correct affixed form of each root word.</p>
+    </div>
+    <div class="quiz-wrap">
+      <div class="score-row">
+        <div class="score-pill">Correct: <b id="score-right">0</b></div>
+        <div class="score-pill">Attempted: <b id="score-total">0</b></div>
+        <div class="score-pill">Streak: <b id="score-streak">0</b></div>
+      </div>
+      <div class="quiz-card">
+        <p class="quiz-progress" id="q-progress">Question 1 of 15</p>
+        <p class="quiz-q" id="q-text"></p>
+        <p class="quiz-hint" id="q-hint"></p>
+        <div class="quiz-input-row">
+          <input type="text" id="q-input" placeholder="Type the answer…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkAnswer()" />
+          <button onclick="checkAnswer()">Check</button>
+        </div>
+        <div class="quiz-feedback" id="q-feedback"></div>
+        <button class="next-btn" onclick="nextQuestion()">Next question →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Reference ── -->
+  <div id="page-reference" class="page">
+    <div class="hero">
+      <p class="hero-eyebrow">Rujukan</p>
+      <h1>Quick <em>reference</em></h1>
+      <p>A complete lookup table for all Malay affixes and spelling rules.</p>
+    </div>
+
+    <div class="ref-section">
+      <h2>meN- spelling rules</h2>
+      <div class="rules-grid">
+        <div class="rule-tile">
+          <div class="trigger">b, p (p dropped)</div>
+          <div class="form">mem-</div>
+          <div class="example">baca → membaca<br>pukul → memukul</div>
+        </div>
+        <div class="rule-tile">
+          <div class="trigger">c, d, j, t (t dropped)</div>
+          <div class="form">men-</div>
+          <div class="example">cuci → mencuci<br>tulis → menulis</div>
+        </div>
+        <div class="rule-tile">
+          <div class="trigger">g, k (k dropped), h, vowel</div>
+          <div class="form">meng-</div>
+          <div class="example">goreng → menggoreng<br>ambil → mengambil</div>
+        </div>
+        <div class="rule-tile">
+          <div class="trigger">s (s dropped)</div>
+          <div class="form">meny-</div>
+          <div class="example">sapu → menyapu<br>simpan → menyimpan</div>
+        </div>
+        <div class="rule-tile">
+          <div class="trigger">l, m, n, r, w, y</div>
+          <div class="form">me-</div>
+          <div class="example">layan → melayan<br>rasa → merasa</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-section">
       <h2>Awalan (prefixes)</h2>
       <table class="ref-table">
         <thead><tr><th>Prefix</th><th>Function</th><th>Examples</th></tr></thead>
         <tbody>
-          <tr><td class="prefix">meN-</td><td>Active transitive/intransitive verb</td><td class="ex">tulis → menulis (to write)<br>baca → membaca (to read)</td></tr>
-          <tr><td class="prefix">ber-</td><td>State, possession, intransitive verb</td><td class="ex">jalan → berjalan (to walk)<br>kerja → bekerja (to work)</td></tr>
-          <tr><td class="prefix">ter-</td><td>Accidental, passive, superlative</td><td class="ex">jatuh → terjatuh (accidentally fell)<br>baik → terbaik (best)</td></tr>
-          <tr><td class="prefix">di-</td><td>Passive voice (by third person)</td><td class="ex">beli → dibeli (was bought)<br>makan → dimakan (was eaten)</td></tr>
-          <tr><td class="prefix">pe-</td><td>Agent noun (doer of action)</td><td class="ex">tulis → penulis (writer)<br>nyanyi → penyanyi (singer)</td></tr>
-          <tr><td class="prefix">per-</td><td>Causative or comparative</td><td class="ex">besar → perbesar (to enlarge)</td></tr>
-          <tr><td class="prefix">ke-</td><td>Ordinal numbers; some nouns</td><td class="ex">tiga → ketiga (third)</td></tr>
+          <tr>
+            <td class="affix-cell">meN-</td>
+            <td>Active transitive or intransitive verb. Spelling changes depending on the root's first letter (see rules above).</td>
+            <td class="ex-cell">tulis → menulis (to write)<br>baca → membaca (to read)<br>goreng → menggoreng (to fry)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">ber-</td>
+            <td>Intransitive verb expressing a state, having something, or doing something without a direct object. Becomes be- before roots starting with r and a few fixed words.</td>
+            <td class="ex-cell">jalan → berjalan (to walk)<br>kerja → bekerja (to work)<br>rasa → berasa (to feel)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">ter-</td>
+            <td>Three uses: (1) accidental/unintentional action, (2) superlative, (3) passive state.</td>
+            <td class="ex-cell">jatuh → terjatuh (accidentally fell)<br>baik → terbaik (the best)<br>buka → terbuka (left open)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">di-</td>
+            <td>Passive voice — third-person agent. Never changes form. For first/second person use ku- or kau- instead.</td>
+            <td class="ex-cell">beli → dibeli (was bought)<br>makan → dimakan (was eaten)<br>tulis → ditulis (was written)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">pe-</td>
+            <td>Creates an agent noun (the person who does the action). Spelling mirrors meN- rules.</td>
+            <td class="ex-cell">tulis → penulis (writer)<br>nyanyi → penyanyi (singer)<br>baca → pembaca (reader)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">ke-</td>
+            <td>Forms ordinal numbers; also found in a small set of nouns and adjectives.</td>
+            <td class="ex-cell">tiga → ketiga (third)<br>empat → keempat (fourth)</td>
+          </tr>
         </tbody>
       </table>
     </div>
-    <div class="reference-section">
+
+    <div class="ref-section">
       <h2>Akhiran (suffixes)</h2>
       <table class="ref-table">
         <thead><tr><th>Suffix</th><th>Function</th><th>Examples</th></tr></thead>
         <tbody>
-          <tr><td class="prefix">-an</td><td>Noun from verb/adjective</td><td class="ex">makan → makanan (food)<br>ajar → ajaran (teaching)</td></tr>
-          <tr><td class="prefix">-kan</td><td>Causative or benefactive</td><td class="ex">buka → bukakan (open for someone)<br>bersih → bersihkan (to clean)</td></tr>
-          <tr><td class="prefix">-i</td><td>Repeated or directed action</td><td class="ex">tanda → tandai (to mark repeatedly)<br>duduk → duduki (to occupy)</td></tr>
+          <tr>
+            <td class="affix-cell">-an</td>
+            <td>Nominalises a verb or adjective. Can indicate the result of an action, a set, or an instrument.</td>
+            <td class="ex-cell">makan → makanan (food)<br>ajar → ajaran (teaching)<br>tanam → tanaman (plant/crop)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">-kan</td>
+            <td>Causative (cause something to happen) or benefactive (do something for someone). Commonly combined with meN-.</td>
+            <td class="ex-cell">buka → bukakan (open for someone)<br>bersih → bersihkan (to clean it)<br>tahu → maklumkan (to inform)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">-i</td>
+            <td>Repeated or directed action — implies the object is covered or repeatedly acted upon. Compare with -kan which focuses on result.</td>
+            <td class="ex-cell">tanda → tandai (to mark)<br>duduk → duduki (to occupy)<br>sayang → sayangi (to cherish)</td>
+          </tr>
         </tbody>
       </table>
     </div>
-    <div class="reference-section">
+
+    <div class="ref-section">
       <h2>Apitan (circumfixes)</h2>
       <table class="ref-table">
         <thead><tr><th>Circumfix</th><th>Function</th><th>Examples</th></tr></thead>
         <tbody>
-          <tr><td class="prefix">ke-…-an</td><td>Abstract noun, state, accidental passive</td><td class="ex">maju → kemajuan (progress)<br>hujan → kehujanan (caught in rain)</td></tr>
-          <tr><td class="prefix">pe-…-an</td><td>Place, process, or abstract noun</td><td class="ex">belajar → pembelajaran (learning)<br>latih → pelatihan (training)</td></tr>
-          <tr><td class="prefix">per-…-an</td><td>Abstract noun, place of action</td><td class="ex">dagang → perdagangan (trade)<br>main → permainan (game)</td></tr>
-          <tr><td class="prefix">me-…-kan</td><td>Active causative verb</td><td class="ex">bersih → membersihkan (to clean)</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="reference-section">
-      <h2>meN- spelling rules</h2>
-      <table class="ref-table">
-        <thead><tr><th>Root starts with</th><th>Form of meN-</th><th>Example</th></tr></thead>
-        <tbody>
-          <tr><td>b, p (→ silent)</td><td>mem-</td><td>baca → membaca; pukul → memukul</td></tr>
-          <tr><td>c, d, j, t (→ silent)</td><td>men-</td><td>cuci → mencuci; tulis → menulis</td></tr>
-          <tr><td>g, k (→ silent), h</td><td>meng-</td><td>goreng → menggoreng; kira → mengira</td></tr>
-          <tr><td>s (→ silent)</td><td>meny-</td><td>sapu → menyapu; simpan → menyimpan</td></tr>
-          <tr><td>l, m, n, r, w, y, vowel</td><td>me-</td><td>layan → melayan; ambil → mengambil</td></tr>
+          <tr>
+            <td class="affix-cell">ke-…-an</td>
+            <td>(1) Abstract noun expressing a quality or state. (2) Accidental passive — subject was caught in a situation.</td>
+            <td class="ex-cell">maju → kemajuan (progress)<br>baik → kebaikan (goodness)<br>hujan → kehujanan (caught in rain)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">pe-…-an</td>
+            <td>Place or process noun. Often denotes an institution, a field of practice, or an abstract process.</td>
+            <td class="ex-cell">belajar → pembelajaran (learning)<br>latih → pelatihan (training)<br>didik → pendidikan (education)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">per-…-an</td>
+            <td>Abstract noun or place where an action happens.</td>
+            <td class="ex-cell">dagang → perdagangan (trade)<br>main → permainan (game)<br>kawin → perkahwinan (marriage)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">me-…-kan</td>
+            <td>Active causative verb — the most common verbal circumfix in Malay.</td>
+            <td class="ex-cell">bersih → membersihkan (to clean)<br>besar → membesarkan (to enlarge)<br>tahu → memberitahukan (to inform)</td>
+          </tr>
+          <tr>
+            <td class="affix-cell">me-…-i</td>
+            <td>Active verb with a directed or covering sense — combines meN- with -i for transitive verbs.</td>
+            <td class="ex-cell">duduk → menduduki (to occupy)<br>sayang → menyayangi (to love)<br>ikut → mengikuti (to follow)</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
-</div>
+
+</main>
 
 <script>
-const data = {
+const imbuhanData = {
   meN: {
-    title: 'meN- (Active verb prefix)',
-    desc: 'Turns root words into active verbs. Its spelling changes depending on the first letter of the root word.',
+    affix: 'meN-', title: 'Active verb prefix', type: 'Awalan',
+    desc: 'Turns root words into active verbs. Its form changes depending on the first letter of the root — this is called nasalisation.',
     examples: [
-      { root: 'tulis', result: 'menulis', meaning: 'to write (t is dropped, men- used)' },
-      { root: 'baca', result: 'membaca', meaning: 'to read (b retained, mem- used)' },
-      { root: 'goreng', result: 'menggoreng', meaning: 'to fry (g retained, meng- used)' },
-      { root: 'sapu', result: 'menyapu', meaning: 'to sweep (s dropped, meny- used)' },
-      { root: 'ambil', result: 'mengambil', meaning: 'to take (vowel, meng- used)' },
+      { root: 'tulis', result: 'menulis', meaning: 'to write — t dropped, men- used' },
+      { root: 'baca', result: 'membaca', meaning: 'to read — b kept, mem- used' },
+      { root: 'goreng', result: 'menggoreng', meaning: 'to fry — g kept, meng- used' },
+      { root: 'sapu', result: 'menyapu', meaning: 'to sweep — s dropped, meny- used' },
+      { root: 'ambil', result: 'mengambil', meaning: 'to take — vowel root, meng- used' },
     ],
-    rule: '<strong>Spelling rule:</strong> meN- changes form. Use <em>mem-</em> before b/p, <em>men-</em> before c/d/j/t, <em>meng-</em> before g/k/h/vowels, <em>meny-</em> before s. Some initial consonants (p, t, k, s) are dropped.'
+    rule: '<strong>Spelling rule:</strong> meN- takes five forms. Use <em>mem-</em> before b/p (p dropped), <em>men-</em> before c/d/j/t (t dropped), <em>meng-</em> before g/k/h/vowels (k dropped), <em>meny-</em> before s (s dropped), and <em>me-</em> before l/m/n/r/w/y.'
   },
   ber: {
-    title: 'ber- (State / intransitive prefix)',
-    desc: 'Creates intransitive verbs expressing a state, having something, or doing something without a direct object.',
+    affix: 'ber-', title: 'State or possession prefix', type: 'Awalan',
+    desc: 'Creates intransitive verbs. Used to express a state of being, having something, or performing an action without a direct object.',
     examples: [
       { root: 'jalan', result: 'berjalan', meaning: 'to walk' },
-      { root: 'kerja', result: 'bekerja', meaning: 'to work (r dropped before kerja)' },
+      { root: 'kerja', result: 'bekerja', meaning: 'to work — r dropped before kerja' },
       { root: 'rasa', result: 'berasa', meaning: 'to feel' },
-      { root: 'teman', result: 'berteman', meaning: 'to have friends' },
+      { root: 'teman', result: 'berteman', meaning: 'to have friends / be accompanied' },
+      { root: 'ajar', result: 'belajar', meaning: 'to study — special: be- before ajar' },
     ],
-    rule: '<strong>Spelling rule:</strong> ber- becomes <em>be-</em> before roots starting with r (e.g., berasa, not berrasa), and before a few fixed words like <em>bekerja</em> (kerja) and <em>belajar</em> (ajar).'
+    rule: '<strong>Spelling rule:</strong> ber- becomes <em>be-</em> before roots starting with r (to avoid double-r), and in two fixed exceptions: <em>bekerja</em> (from kerja) and <em>belajar</em> (from ajar).'
   },
   ter: {
-    title: 'ter- (Accidental / superlative prefix)',
-    desc: 'Expresses three main ideas: an accidental or unintentional action, a superlative, or a passive state.',
+    affix: 'ter-', title: 'Accidental / superlative prefix', type: 'Awalan',
+    desc: 'Has three distinct uses: (1) an unintentional or accidental action, (2) a superlative meaning (most / -est), and (3) a passive state.',
     examples: [
-      { root: 'jatuh', result: 'terjatuh', meaning: 'accidentally fell' },
+      { root: 'jatuh', result: 'terjatuh', meaning: 'accidentally fell (unintentional)' },
       { root: 'baik', result: 'terbaik', meaning: 'the best (superlative)' },
-      { root: 'buka', result: 'terbuka', meaning: 'open / was opened (passive state)' },
+      { root: 'buka', result: 'terbuka', meaning: 'open / was left open (state)' },
       { root: 'tidur', result: 'tertidur', meaning: 'fell asleep accidentally' },
     ],
-    rule: '<strong>Usage tip:</strong> ter- is not used for intentional actions. "I opened the door" is <em>saya membuka pintu</em>, but "the door was accidentally opened" is <em>pintu terbuka</em>.'
+    rule: '<strong>Key distinction:</strong> ter- is never used for intentional actions. "I opened the door" = <em>saya membuka pintu</em>. "The door was left open" = <em>pintu terbuka</em>.'
   },
   di: {
-    title: 'di- (Passive prefix)',
-    desc: 'Creates passive sentences where the subject receives the action. Used for third-person agents (he/she/they/it did it).',
+    affix: 'di-', title: 'Passive voice prefix', type: 'Awalan',
+    desc: 'Creates passive sentences where the subject receives the action. Used specifically when the agent is a third person (he/she/they/it). Never changes form.',
     examples: [
       { root: 'beli', result: 'dibeli', meaning: 'was bought' },
       { root: 'makan', result: 'dimakan', meaning: 'was eaten' },
       { root: 'tulis', result: 'ditulis', meaning: 'was written' },
       { root: 'baca', result: 'dibaca', meaning: 'was read' },
     ],
-    rule: '<strong>Note:</strong> di- never changes its spelling. For first/second person agents, use <em>ku-</em> or <em>kau-</em> instead (e.g. kubeli = I bought it; kaubeli = you bought it).'
+    rule: '<strong>Note:</strong> di- never changes its spelling. For first-person agents use <em>ku-</em> (e.g. <em>kubeli</em> = I bought it) and for second-person use <em>kau-</em> (e.g. <em>kaubeli</em> = you bought it).'
+  },
+  pe: {
+    affix: 'pe-', title: 'Agent noun prefix', type: 'Awalan',
+    desc: 'Derives an agent noun — the person or thing that performs an action. Its spelling follows the same nasalisation rules as meN-.',
+    examples: [
+      { root: 'tulis', result: 'penulis', meaning: 'writer' },
+      { root: 'nyanyi', result: 'penyanyi', meaning: 'singer' },
+      { root: 'baca', result: 'pembaca', meaning: 'reader' },
+      { root: 'layan', result: 'pelayan', meaning: 'server / attendant' },
+    ],
+    rule: '<strong>Spelling rule:</strong> pe- mirrors meN-: use <em>pem-</em> before b/p, <em>pen-</em> before c/d/j/t, <em>peng-</em> before g/k/h/vowels, <em>peny-</em> before s, and <em>pe-</em> before l/m/n/r/w/y.'
   },
   an: {
-    title: '-an (Nominaliser suffix)',
-    desc: 'Turns verbs or adjectives into nouns. It can also indicate the result of an action, a collection, or a comparison.',
+    affix: '-an', title: 'Nominaliser suffix', type: 'Akhiran',
+    desc: 'Turns verbs and adjectives into nouns. Can indicate the result of an action, an instrument, a collection, or an abstract concept.',
     examples: [
       { root: 'makan', result: 'makanan', meaning: 'food (result of eating)' },
       { root: 'ajar', result: 'ajaran', meaning: 'teaching / doctrine' },
-      { root: 'tanam', result: 'tanaman', meaning: 'plant / crop (what is planted)' },
+      { root: 'tanam', result: 'tanaman', meaning: 'plant / crop' },
       { root: 'besar', result: 'besaran', meaning: 'magnitude / amount' },
+      { root: 'tulis', result: 'tulisan', meaning: 'writing / script' },
     ],
-    rule: '<strong>Usage tip:</strong> -an is very productive. Combined with me- prefix: <em>me- + tulis + -an</em> → <em>tulisan</em> (writing). When combined, meN- prefix is dropped in the final noun form.'
+    rule: '<strong>Usage tip:</strong> -an is highly productive. When combined with meN-, the prefix is dropped in the final noun — e.g. <em>tulis + -an</em> → <em>tulisan</em> (not *meNtulisan).'
   },
   kan: {
-    title: '-kan (Causative / benefactive suffix)',
-    desc: 'Makes a verb causative (causing something to happen) or benefactive (doing something for someone else).',
+    affix: '-kan', title: 'Causative / benefactive suffix', type: 'Akhiran',
+    desc: 'Makes a verb causative (causing something to happen to an object) or benefactive (performing an action for someone else\'s benefit).',
     examples: [
       { root: 'buka', result: 'bukakan', meaning: 'open (for someone) — benefactive' },
       { root: 'bersih', result: 'bersihkan', meaning: 'to clean (cause to be clean)' },
-      { root: 'duduk', result: 'dudukkan', meaning: 'to seat someone / to place' },
-      { root: 'tahu', result: 'tahu + kan → maklumkan', meaning: 'to inform (causative)' },
+      { root: 'duduk', result: 'dudukkan', meaning: 'to seat / to place something' },
+      { root: 'beri', result: 'berikan', meaning: 'to give (to someone)' },
     ],
-    rule: '<strong>Combining with meN-:</strong> meN- + root + -kan is very common. E.g. <em>membersihkan</em> (to clean something), <em>memberikan</em> (to give to someone).'
+    rule: '<strong>Combining with meN-:</strong> meN- + root + -kan is extremely common. E.g. <em>membersihkan</em> (to clean something), <em>memberikan</em> (to give something to someone).'
   },
   i: {
-    title: '-i (Directed / repeated action suffix)',
-    desc: 'Indicates an action directed at a specific object or performed repeatedly. Often implies covering a surface or area.',
+    affix: '-i', title: 'Directed or repeated action suffix', type: 'Akhiran',
+    desc: 'Indicates an action directed at a specific object or performed repeatedly and thoroughly — often implies covering a surface or area.',
     examples: [
       { root: 'tanda', result: 'tandai', meaning: 'to mark (something)' },
-      { root: 'duduk', result: 'duduki', meaning: 'to occupy (a seat/land)' },
-      { root: 'sayang', result: 'sayangi', meaning: 'to love/cherish (someone)' },
+      { root: 'duduk', result: 'duduki', meaning: 'to occupy (a seat / territory)' },
+      { root: 'sayang', result: 'sayangi', meaning: 'to love / cherish (someone)' },
       { root: 'tanam', result: 'tanami', meaning: 'to plant throughout (a field)' },
     ],
-    rule: '<strong>-i vs -kan:</strong> -i often implies the object is "covered" or "repeatedly acted upon". <em>tutup pintu</em> = close the door; <em>menutup + i</em> → to keep closing. -kan is more about causing a result.'
+    rule: '<strong>-i vs -kan:</strong> -i implies the object is thoroughly covered or repeatedly affected. -kan focuses on causing a result. Compare: <em>menutup pintu</em> (close the door) vs <em>menutupi lubang</em> (cover up a hole completely).'
   },
   ke_an: {
-    title: 'ke-…-an (Circumfix)',
-    desc: 'Wraps around the root word (prefix and suffix together). Forms abstract nouns expressing a state, condition, or quality — and can express accidental passive.',
+    affix: 'ke-…-an', title: 'Abstract noun / accidental state', type: 'Apitan',
+    desc: 'A circumfix that wraps around the root. Forms (1) abstract nouns expressing a quality or state, and (2) accidental passive — the subject was caught in a situation.',
     examples: [
       { root: 'maju', result: 'kemajuan', meaning: 'progress / advancement' },
       { root: 'baik', result: 'kebaikan', meaning: 'goodness / kindness' },
+      { root: 'merdeka', result: 'kemerdekaan', meaning: 'independence (abstract noun)' },
       { root: 'hujan', result: 'kehujanan', meaning: 'caught in the rain (accidental)' },
-      { root: 'sejuk', result: 'keseju(k)an', meaning: 'feeling cold (accidental state)' },
+      { root: 'sejuk', result: 'keseju(k)an', meaning: 'feeling cold / got cold (state)' },
     ],
-    rule: '<strong>Two meanings:</strong> (1) Abstract noun — <em>kemerdekaan</em> (independence), <em>keadilan</em> (justice). (2) Accidental passive state — <em>kehujanan</em> (got rained on), <em>kepanasan</em> (got overheated). Context tells them apart.'
+    rule: '<strong>Two meanings:</strong> Context distinguishes them. <em>kemajuan</em> = abstract noun (progress). <em>kehujanan</em> = accidental passive (got rained on) — the person didn\'t choose to be in the rain.'
+  },
+  pe_an: {
+    affix: 'pe-…-an', title: 'Place or process noun', type: 'Apitan',
+    desc: 'Forms nouns denoting a place where an action occurs, a process, or an abstract field of practice. Combines pe- with -an around the root.',
+    examples: [
+      { root: 'belajar', result: 'pembelajaran', meaning: 'learning / the process of learning' },
+      { root: 'latih', result: 'pelatihan', meaning: 'training (process)' },
+      { root: 'didik', result: 'pendidikan', meaning: 'education' },
+      { root: 'niaga', result: 'perniagaan', meaning: 'business / commerce' },
+    ],
+    rule: '<strong>Note:</strong> pe-…-an follows the same nasalisation rules as pe- for the prefix part. The -an suffix is always added unchanged at the end of the root.'
   }
 };
 
 const questions = [
-  { q: 'Add meN- to "tulis" (to write)', hint: 'Hint: t is dropped; use men-', answers: ['menulis'], explain: 'meN- + tulis → menulis (t is dropped, men- is used)' },
-  { q: 'Add meN- to "baca" (to read)', hint: 'Hint: b is kept; use mem-', answers: ['membaca'], explain: 'meN- + baca → membaca (b is retained, mem- is used)' },
-  { q: 'Add meN- to "goreng" (to fry)', hint: 'Hint: g is kept; use meng-', answers: ['menggoreng'], explain: 'meN- + goreng → menggoreng (g is retained, meng- is used)' },
-  { q: 'Add meN- to "sapu" (to sweep)', hint: 'Hint: s is dropped; use meny-', answers: ['menyapu'], explain: 'meN- + sapu → menyapu (s is dropped, meny- is used)' },
-  { q: 'Add ber- to "jalan" (walk)', hint: 'Hint: straightforward attachment', answers: ['berjalan'], explain: 'ber- + jalan → berjalan' },
-  { q: 'Add ber- to "kerja" (work)', hint: 'Hint: ber- shortens before "kerja"', answers: ['bekerja'], explain: 'ber- + kerja → bekerja (the r is dropped for ease of pronunciation)' },
-  { q: 'Add -an to "makan" (eat)', hint: 'Hint: add the suffix directly', answers: ['makanan'], explain: 'makan + -an → makanan (food)' },
-  { q: 'Add ter- to "baik" to form the superlative', hint: 'Hint: ter- = best/most', answers: ['terbaik'], explain: 'ter- + baik → terbaik (the best)' },
-  { q: 'Add di- to "beli" (buy) to make it passive', hint: 'Hint: di- never changes', answers: ['dibeli'], explain: 'di- + beli → dibeli (was bought)' },
-  { q: 'Form "goodness" using ke-…-an + "baik"', hint: 'Hint: wrap ke- and -an around the root', answers: ['kebaikan'], explain: 'ke- + baik + -an → kebaikan (goodness/kindness)' },
-  { q: 'Add meN- to "ambil" (take)', hint: 'Hint: root starts with vowel, use meng-', answers: ['mengambil'], explain: 'meN- + ambil → mengambil (vowel root → meng-)' },
-  { q: 'Add -kan to "bersih" (clean)', hint: 'Hint: simple suffix addition', answers: ['bersihkan'], explain: 'bersih + -kan → bersihkan (to clean it)' },
-  { q: 'Form the word for "progress" using ke-…-an + "maju"', hint: 'Hint: abstract noun circumfix', answers: ['kemajuan'], explain: 'ke- + maju + -an → kemajuan (progress)' },
+  { q: 'Add meN- to "tulis" (write)', hint: 'Hint: t is dropped; use men-', answers: ['menulis'], explain: 'meN- + tulis → menulis (t is dropped, men- is used because t is a dental consonant)' },
+  { q: 'Add meN- to "baca" (read)', hint: 'Hint: b is kept; use mem-', answers: ['membaca'], explain: 'meN- + baca → membaca (b is retained, mem- is used for labial consonants)' },
+  { q: 'Add meN- to "goreng" (fry)', hint: 'Hint: g is kept; use meng-', answers: ['menggoreng'], explain: 'meN- + goreng → menggoreng (g is retained, meng- used for velar consonants)' },
+  { q: 'Add meN- to "sapu" (sweep)', hint: 'Hint: s is dropped; use meny-', answers: ['menyapu'], explain: 'meN- + sapu → menyapu (s is dropped, meny- used for sibilants)' },
+  { q: 'Add meN- to "ambil" (take)', hint: 'Hint: root starts with vowel; use meng-', answers: ['mengambil'], explain: 'meN- + ambil → mengambil (vowel root uses meng-)' },
   { q: 'Add meN- to "pukul" (hit)', hint: 'Hint: p is dropped; use mem-', answers: ['memukul'], explain: 'meN- + pukul → memukul (p is dropped, mem- used)' },
-  { q: 'Add meN- to "kira" (estimate/count)', hint: 'Hint: k is dropped; use meng-', answers: ['mengira'], explain: 'meN- + kira → mengira (k is dropped, meng- used)' },
+  { q: 'Add meN- to "kira" (estimate)', hint: 'Hint: k is dropped; use meng-', answers: ['mengira'], explain: 'meN- + kira → mengira (k is dropped, meng- used)' },
+  { q: 'Add ber- to "jalan" (walk)', hint: 'Hint: straightforward attachment', answers: ['berjalan'], explain: 'ber- + jalan → berjalan (no change needed)' },
+  { q: 'Add ber- to "kerja" (work)', hint: 'Hint: ber- shortens before "kerja"', answers: ['bekerja'], explain: 'ber- + kerja → bekerja (the r is elided for ease of pronunciation)' },
+  { q: 'Add ter- to "baik" to form the superlative', hint: 'Hint: ter- + adjective = most/best', answers: ['terbaik'], explain: 'ter- + baik → terbaik (the best / most good)' },
+  { q: 'Add di- to "beli" (buy) to make it passive', hint: 'Hint: di- never changes its spelling', answers: ['dibeli'], explain: 'di- + beli → dibeli (was bought)' },
+  { q: 'Add -an to "makan" (eat)', hint: 'Hint: add the suffix directly', answers: ['makanan'], explain: 'makan + -an → makanan (food — the result of eating)' },
+  { q: 'Add -kan to "bersih" (clean)', hint: 'Hint: simple suffix attachment', answers: ['bersihkan'], explain: 'bersih + -kan → bersihkan (to clean it / make it clean)' },
+  { q: 'Form "goodness" using ke-…-an + "baik"', hint: 'Hint: wrap ke- and -an around the root', answers: ['kebaikan'], explain: 'ke- + baik + -an → kebaikan (goodness / kindness)' },
+  { q: 'Form "progress" using ke-…-an + "maju"', hint: 'Hint: abstract noun circumfix', answers: ['kemajuan'], explain: 'ke- + maju + -an → kemajuan (progress / advancement)' },
+  { q: 'Add -i to "tanda" (mark)', hint: 'Hint: directed action suffix', answers: ['tandai'], explain: 'tanda + -i → tandai (to mark something)' },
+  { q: 'Form "writer" using pe- + "tulis"', hint: 'Hint: pe- follows same rules as meN-; t is dropped', answers: ['penulis'], explain: 'pe- + tulis → penulis (t dropped, pen- used — writer)' },
+  { q: 'Add meN- to "layan" (serve)', hint: 'Hint: l — use me-', answers: ['melayan'], explain: 'meN- + layan → melayan (l uses me- with no change)' },
 ];
 
-let qIndex = 0, answered = false, scoreRight = 0, scoreTotal = 0;
+let qIndex = 0, answered = false, scoreRight = 0, scoreTotal = 0, streak = 0;
 let shuffled = [...questions].sort(() => Math.random() - 0.5);
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['learn','quiz','reference'][i] === tab));
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab')[['learn','quiz','reference'].indexOf(name)].classList.add('active');
 }
 
 function selectImbuhan(key) {
-  document.querySelectorAll('.imbuhan-card').forEach(c => c.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
-  const d = data[key];
-  const panel = document.getElementById('detail');
-  panel.style.display = 'block';
-  panel.innerHTML = `<h2>${d.title}</h2><p style="font-size:14px;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6">${d.desc}</p>
-    <div class="examples-list">${d.examples.map(e => `
-      <div class="example-row">
-        <span class="root">${e.root}</span>
-        <span class="arrow">→</span>
-        <span class="result">${e.result}</span>
-        <span class="meaning">${e.meaning}</span>
-      </div>`).join('')}
+  const d = imbuhanData[key];
+  document.querySelectorAll('.imbuhan-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('detail-panel').innerHTML = `
+    <div class="detail-header">
+      <div class="affix-large">${d.affix}</div>
+      <h2>${d.title}</h2>
+      <p>${d.desc}</p>
     </div>
-    <div class="rule-box">${d.rule}</div>`;
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    <div class="examples-block">
+      <h3>Examples</h3>
+      ${d.examples.map(e => `
+        <div class="example-row">
+          <span class="example-root">${e.root}</span>
+          <span class="example-arrow">→</span>
+          <span class="example-result">${e.result}</span>
+          <span class="example-meaning">${e.meaning}</span>
+        </div>`).join('')}
+    </div>
+    <div class="rule-block">${d.rule}</div>`;
 }
 
 function loadQuestion() {
   const q = shuffled[qIndex % shuffled.length];
+  document.getElementById('q-progress').textContent = 'Question ' + ((qIndex % shuffled.length) + 1) + ' of ' + shuffled.length;
   document.getElementById('q-text').textContent = q.q;
   document.getElementById('q-hint').textContent = q.hint;
   document.getElementById('q-input').value = '';
-  document.getElementById('q-result').className = 'quiz-result';
-  document.getElementById('q-result').textContent = '';
+  document.getElementById('q-feedback').className = 'quiz-feedback';
+  document.getElementById('q-feedback').textContent = '';
   document.getElementById('q-input').focus();
   answered = false;
 }
@@ -350,16 +756,17 @@ function checkAnswer() {
   answered = true;
   scoreTotal++;
   const correct = q.answers.some(a => a.toLowerCase() === val);
-  if (correct) scoreRight++;
+  if (correct) { scoreRight++; streak++; } else { streak = 0; }
   document.getElementById('score-right').textContent = scoreRight;
   document.getElementById('score-total').textContent = scoreTotal;
-  const res = document.getElementById('q-result');
+  document.getElementById('score-streak').textContent = streak;
+  const fb = document.getElementById('q-feedback');
   if (correct) {
-    res.className = 'quiz-result correct';
-    res.textContent = '✓ Correct! ' + q.explain;
+    fb.className = 'quiz-feedback correct';
+    fb.textContent = '✓ Correct! ' + q.explain;
   } else {
-    res.className = 'quiz-result wrong';
-    res.textContent = '✗ Not quite. The answer is: ' + q.answers[0] + '. ' + q.explain;
+    fb.className = 'quiz-feedback wrong';
+    fb.textContent = '✗ The answer is: ' + q.answers[0] + '. ' + q.explain;
   }
 }
 
@@ -374,3 +781,5 @@ function nextQuestion() {
 
 loadQuestion();
 </script>
+</body>
+</html>
